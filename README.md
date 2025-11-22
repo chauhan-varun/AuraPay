@@ -69,8 +69,8 @@ Before you begin, ensure you have the following installed:
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd aurapay
+   git clone https://github.com/chauhan-varun/AuraPay.git
+   cd AuraPay
    ```
 
 2. **Install dependencies**
