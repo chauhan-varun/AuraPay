@@ -13,10 +13,12 @@ model User {
   email         String    @unique
   emailVerified Boolean?
   image         String?
+  phone         String?
+  address       String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   role          String    @default("user") // "user" or "admin"
-  balance       Float     @default(0.0)
+  balance       Float     @default(123432.32)
 
   sessions      Session[]
   accounts      Account[]
@@ -72,6 +74,7 @@ model Verification {
 model Card {
   id          String   @id @default(cuid())
   userId      String
+  name        String?  // Custom name for the card
   cardNumber  String   @unique // Last 4 digits or full number masked
   expiryDate  String
   cvv         String

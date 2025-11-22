@@ -19,16 +19,41 @@ export default function AdminLoginPage() {
         e.preventDefault();
         setLoading(true);
         try {
-            await authClient.signIn.email({
-                email,
-                password,
-                callbackURL: "/admin/dashboard",
+            const response = await fetch("/api/admin/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
             });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                if (response.status === 403) {
+                    toast.error("Access denied. Admin privileges required.");
+                } else {
+                    toast.error(data.error || "Invalid credentials");
+                }
+                setLoading(false);
+                return;
+            }
+
             toast.success("Welcome back, Admin!");
+
+            // Wait a bit longer to ensure session cookies are properly set
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Use router.push for proper Next.js navigation
             router.push("/admin/dashboard");
+
+            // Fallback to hard navigation after a delay if router.push doesn't work
+            setTimeout(() => {
+                window.location.href = "/admin/dashboard";
+            }, 1000);
         } catch (error) {
-            toast.error("Invalid credentials");
-        } finally {
+            console.error("Login error:", error);
+            toast.error("An error occurred. Please try again.");
             setLoading(false);
         }
     };

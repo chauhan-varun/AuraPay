@@ -1,27 +1,50 @@
-import { AdminAppSidebar } from "@/components/AdminSidebar";
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { AdminLayoutClient } from "@/components/AdminLayoutClient";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { PrismaClient } from "@prisma/client";
 
-export default function AdminLayout({
+const prisma = new PrismaClient();
+
+// Force dynamic rendering for admin routes since we use headers() for auth
+export const dynamic = 'force-dynamic';
+
+export default async function AdminLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    return (
-        <SidebarProvider defaultOpen={false}>
-            <AdminAppSidebar />
-            <SidebarInset className="bg-black text-white">
-                <header className="flex h-16 items-center gap-2 border-b border-white/10 px-4">
-                    <SidebarTrigger />
-                </header>
-                <main className="flex-1 overflow-y-auto p-8 relative">
-                    {/* Background Effects for Admin Dashboard */}
-                    <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-                        <div className="absolute top-[-10%] right-[-5%] w-[30%] h-[30%] bg-purple-900/10 rounded-full blur-[100px]" />
-                        <div className="absolute bottom-[-10%] left-[-5%] w-[30%] h-[30%] bg-indigo-900/10 rounded-full blur-[100px]" />
-                    </div>
-                    {children}
-                </main>
-            </SidebarInset>
-        </SidebarProvider>
-    );
+    try {
+        // Server-side admin role verification
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session || !session.user) {
+            console.log("Admin Layout: No session found, redirecting to login");
+            redirect("/admin/login");
+        }
+
+        // Check admin role from database
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            select: { role: true },
+        });
+
+        if (!user) {
+            console.log("Admin Layout: User not found in database");
+            redirect("/admin/login");
+        }
+
+        if (user.role !== "admin") {
+            console.log("Admin Layout: User is not admin, role:", user.role);
+            redirect("/admin/login");
+        }
+
+        console.log("Admin Layout: Access granted for user:", session.user.id);
+        return <AdminLayoutClient>{children}</AdminLayoutClient>;
+    } catch (error) {
+        console.error("Admin Layout Error:", error);
+        redirect("/admin/login");
+    }
 }

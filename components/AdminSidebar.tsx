@@ -82,11 +82,13 @@ export function AdminAppSidebar() {
                                             asChild
                                             isActive={isActive}
                                             tooltip={item.name}
-                                            className={isActive ? "bg-purple-500/20 text-purple-400 neon-border" : "text-zinc-400 hover:bg-white/5 hover:text-white"}
+                                            className={`relative group/item ${isActive ? "bg-purple-500/20 text-purple-400 neon-border" : "text-zinc-400 hover:bg-white/5 hover:text-white"}`}
                                         >
-                                            <Link href={item.href}>
-                                                <Icon className="h-5 w-5" />
-                                                <span>{item.name}</span>
+                                            <Link href={item.href} className="flex items-center gap-2">
+                                                <Icon className="h-5 w-5 shrink-0" />
+                                                <span className="group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:left-12 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:group-hover/item:opacity-100 group-data-[collapsible=icon]:group-hover/item:font-semibold group-data-[collapsible=icon]:transition-opacity group-data-[collapsible=icon]:bg-black/90 group-data-[collapsible=icon]:px-3 group-data-[collapsible=icon]:py-1 group-data-[collapsible=icon]:rounded-md group-data-[collapsible=icon]:border group-data-[collapsible=icon]:border-white/10 group-data-[collapsible=icon]:whitespace-nowrap group-data-[collapsible=icon]:z-50">
+                                                    {item.name}
+                                                </span>
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
@@ -103,10 +105,12 @@ export function AdminAppSidebar() {
                         <SidebarMenuButton
                             onClick={handleLogout}
                             tooltip="Logout"
-                            className="text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                            className="relative group/item text-red-400 hover:bg-red-500/10 hover:text-red-300"
                         >
-                            <LogOut className="h-5 w-5" />
-                            <span>Logout</span>
+                            <LogOut className="h-5 w-5 shrink-0" />
+                            <span className="group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:left-12 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:group-hover/item:opacity-100 group-data-[collapsible=icon]:group-hover/item:font-semibold group-data-[collapsible=icon]:transition-opacity group-data-[collapsible=icon]:bg-black/90 group-data-[collapsible=icon]:px-3 group-data-[collapsible=icon]:py-1 group-data-[collapsible=icon]:rounded-md group-data-[collapsible=icon]:border group-data-[collapsible=icon]:border-white/10 group-data-[collapsible=icon]:whitespace-nowrap group-data-[collapsible=icon]:z-50">
+                                Logout
+                            </span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

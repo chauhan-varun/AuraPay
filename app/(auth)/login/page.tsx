@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { NeonCard } from "@/components/NeonCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, Lock, User, ArrowLeft, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -17,7 +19,12 @@ export default function UserLoginPage() {
     const [loading, setLoading] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
     const [errors, setErrors] = useState<{ email?: string; password?: string; name?: string }>({});
+    const [showContent, setShowContent] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        setShowContent(true);
+    }, []);
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -83,7 +90,12 @@ export default function UserLoginPage() {
                 }
 
                 toast.success("Account created successfully!");
-                router.push("/dashboard");
+
+                // Small delay to ensure cookies are set
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                // Use hard navigation to ensure session is loaded
+                window.location.href = "/dashboard";
             } else {
                 // Sign in
                 const result = await authClient.signIn.email({
@@ -113,7 +125,12 @@ export default function UserLoginPage() {
                 }
 
                 toast.success("Logged in successfully!");
-                router.push("/dashboard");
+
+                // Small delay to ensure cookies are set
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                // Use hard navigation to ensure session is loaded
+                window.location.href = "/dashboard";
             }
         } catch (error: any) {
             console.error("Auth error:", error);
@@ -133,99 +150,169 @@ export default function UserLoginPage() {
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-black p-4 relative overflow-hidden">
+            {/* Animated Background */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-                <div className="absolute top-[20%] left-[30%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[100px]" />
+                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[120px] animate-pulse" />
+                <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: "1s" }} />
             </div>
 
-            <NeonCard className="w-full max-w-md z-10" glow>
+            {/* Back to Home Link */}
+            <Link href="/" className={`fixed top-6 left-6 z-50 flex items-center gap-2 text-zinc-400 hover:text-white transition-all duration-300 hover:gap-3 ${showContent ? "opacity-100" : "opacity-0"
+                }`}>
+                <ArrowLeft className="h-5 w-5" />
+                <span className="text-sm font-medium hidden sm:inline">Back to Home</span>
+            </Link>
+
+            {/* Main Content */}
+            <div className={`w-full max-w-md z-10 transition-all duration-700 ${showContent ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                }`}>
+                {/* Logo and Title */}
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-white mb-2">
-                        {isSignUp ? "Create Account" : "Welcome Back"}
-                    </h1>
-                    <p className="text-zinc-400">
-                        {isSignUp ? "Sign up to get started with AuraPay" : "Sign in to access your dashboard"}
-                    </p>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {isSignUp && (
-                        <div className="space-y-2">
-                            <Label htmlFor="name" className="text-sm font-medium text-zinc-300">
-                                Full Name
-                            </Label>
-                            <Input
-                                id="name"
-                                type="text"
-                                placeholder="John Doe"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="bg-black/20 border-white/10 text-white placeholder:text-zinc-600 focus:border-primary/50 focus:ring-primary/20"
+                    <div className="flex justify-center mb-4">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
+                            <Image
+                                src="/logo.svg"
+                                alt="AuraPay"
+                                width={60}
+                                height={60}
+                                className="relative drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]"
                             />
-                            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                         </div>
-                    )}
-
-                    <div className="space-y-2">
-                        <Label htmlFor="email" className="text-sm font-medium text-zinc-300">
-                            Email Address
-                        </Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="john@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-zinc-600 focus:border-primary/50 focus:ring-primary/20"
-                        />
-                        {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                     </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="password" className="text-sm font-medium text-zinc-300">
-                            Password
-                        </Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="bg-black/20 border-white/10 text-white placeholder:text-zinc-600 focus:border-primary/50 focus:ring-primary/20"
-                        />
-                        {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
-                        {isSignUp && !errors.password && (
-                            <p className="text-zinc-500 text-xs mt-1">Must be at least 8 characters long</p>
-                        )}
+                    <h1 className="text-3xl md:text-4xl font-bold neon-gradient-text mb-2">AuraPay</h1>
+                    <div className="flex items-center justify-center gap-2 text-zinc-400 text-sm">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span>Next-Gen Digital Banking</span>
                     </div>
-
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 neon-border"
-                    >
-                        {loading ? (
-                            <Loader2 className="animate-spin" />
-                        ) : isSignUp ? (
-                            "Create Account"
-                        ) : (
-                            "Sign In"
-                        )}
-                    </Button>
-                </form>
-
-                <div className="mt-6 text-center">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setIsSignUp(!isSignUp);
-                            setErrors({});
-                        }}
-                        className="text-sm text-zinc-400 hover:text-primary transition-colors"
-                    >
-                        {isSignUp ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
-                    </button>
                 </div>
-            </NeonCard>
+
+                <NeonCard className="w-full backdrop-blur-md bg-black/40" glow>
+                    <div className="text-center mb-8">
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                            {isSignUp ? "Create Account" : "Welcome Back"}
+                        </h2>
+                        <p className="text-sm md:text-base text-zinc-400">
+                            {isSignUp ? "Join thousands of users on AuraPay" : "Sign in to access your dashboard"}
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        {isSignUp && (
+                            <div className="space-y-2">
+                                <Label htmlFor="name" className="text-sm font-medium text-zinc-300">
+                                    Full Name
+                                </Label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500" />
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        placeholder="John Doe"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        className="pl-11 bg-black/30 border-white/10 text-white placeholder:text-zinc-600 focus:border-primary/50 focus:ring-primary/20 h-12"
+                                    />
+                                </div>
+                                {errors.name && <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+                                    <span className="inline-block w-1 h-1 rounded-full bg-red-400"></span>
+                                    {errors.name}
+                                </p>}
+                            </div>
+                        )}
+
+                        <div className="space-y-2">
+                            <Label htmlFor="email" className="text-sm font-medium text-zinc-300">
+                                Email Address
+                            </Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500" />
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="john@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="pl-11 bg-black/30 border-white/10 text-white placeholder:text-zinc-600 focus:border-primary/50 focus:ring-primary/20 h-12"
+                                />
+                            </div>
+                            {errors.email && <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+                                <span className="inline-block w-1 h-1 rounded-full bg-red-400"></span>
+                                {errors.email}
+                            </p>}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password" className="text-sm font-medium text-zinc-300">
+                                Password
+                            </Label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500" />
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="pl-11 bg-black/30 border-white/10 text-white placeholder:text-zinc-600 focus:border-primary/50 focus:ring-primary/20 h-12"
+                                />
+                            </div>
+                            {errors.password && <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
+                                <span className="inline-block w-1 h-1 rounded-full bg-red-400"></span>
+                                {errors.password}
+                            </p>}
+                            {isSignUp && !errors.password && (
+                                <p className="text-zinc-500 text-xs mt-1 flex items-center gap-1">
+                                    <span className="inline-block w-1 h-1 rounded-full bg-zinc-500"></span>
+                                    Must be at least 8 characters long
+                                </p>
+                            )}
+                        </div>
+
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-12 text-base neon-border transition-all hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] mt-6"
+                        >
+                            {loading ? (
+                                <Loader2 className="animate-spin h-5 w-5" />
+                            ) : isSignUp ? (
+                                "Create Account"
+                            ) : (
+                                "Sign In"
+                            )}
+                        </Button>
+                    </form>
+
+                    <div className="mt-6 pt-6 border-t border-white/10 text-center">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsSignUp(!isSignUp);
+                                setErrors({});
+                            }}
+                            className="text-sm text-zinc-400 hover:text-primary transition-colors font-medium"
+                        >
+                            {isSignUp ? (
+                                <>
+                                    Already have an account?{" "}
+                                    <span className="text-primary underline underline-offset-2">Sign in</span>
+                                </>
+                            ) : (
+                                <>
+                                    Don't have an account?{" "}
+                                    <span className="text-primary underline underline-offset-2">Sign up</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </NeonCard>
+
+                {/* Additional Info */}
+                <p className="text-center text-xs text-zinc-500 mt-6">
+                    By continuing, you agree to AuraPay's Terms of Service and Privacy Policy
+                </p>
+            </div>
         </div>
     );
 }

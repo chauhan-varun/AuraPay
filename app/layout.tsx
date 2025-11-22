@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "AuraPay - Modern Fintech Platform",
   description: "Secure and modern fintech platform for digital payments",
+  icons: {
+    icon: '/logo.svg',
+  },
 };
 
 export default function RootLayout({

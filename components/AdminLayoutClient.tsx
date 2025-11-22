@@ -1,20 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { AppSidebar } from "@/components/Sidebar";
+import { AdminAppSidebar } from "@/components/AdminSidebar";
+import { AdminMobileMenu } from "@/components/AdminMobileMenu";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
-import { MobileMenu } from "@/components/MobileMenu";
 
-export default function UserLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider defaultOpen={false}>
             {/* Desktop Sidebar - Hidden on mobile */}
             <div className="hidden lg:block">
-                <AppSidebar />
+                <AdminAppSidebar />
             </div>
 
             <SidebarInset className="bg-black text-white">
@@ -26,14 +21,14 @@ export default function UserLayout({
 
                     {/* Mobile Menu Drawer - Visible only on mobile */}
                     <div className="lg:hidden">
-                        <MobileMenu />
+                        <AdminMobileMenu />
                     </div>
                 </header>
                 <main className="flex-1 overflow-y-auto p-4 lg:p-8 relative">
-                    {/* Background Effects for Dashboard */}
+                    {/* Background Effects for Admin Dashboard */}
                     <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-                        <div className="absolute top-[-10%] right-[-5%] w-[30%] h-[30%] bg-purple-900/20 rounded-full blur-[100px]" />
-                        <div className="absolute bottom-[-10%] left-[-5%] w-[30%] h-[30%] bg-blue-900/20 rounded-full blur-[100px]" />
+                        <div className="absolute top-[-10%] right-[-5%] w-[30%] h-[30%] bg-purple-900/10 rounded-full blur-[100px]" />
+                        <div className="absolute bottom-[-10%] left-[-5%] w-[30%] h-[30%] bg-indigo-900/10 rounded-full blur-[100px]" />
                     </div>
                     {children}
                 </main>
@@ -41,3 +36,4 @@ export default function UserLayout({
         </SidebarProvider>
     );
 }
+
