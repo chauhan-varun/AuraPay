@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { NeonCard } from "@/components/NeonCard";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Plus,
     ArrowUpRight,
@@ -31,14 +34,26 @@ const data = [
 ];
 
 export default function DashboardPage() {
+    const router = useRouter();
+    const [isCardFlipped, setIsCardFlipped] = useState(false);
+
+    // TODO: Replace with actual user data from session/API
+    const userName = "Mike Johns";
+    const userInitials = userName.split(" ").map(n => n[0]).join("");
+
     return (
         <div className="space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-500 to-blue-500" />
+                    <Avatar className="h-12 w-12 border-2 border-primary/50">
+                        <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mike" />
+                        <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white font-bold">
+                            {userInitials}
+                        </AvatarFallback>
+                    </Avatar>
                     <div>
-                        <h1 className="text-2xl font-bold text-white">Hello, Mike Johns!</h1>
+                        <h1 className="text-2xl font-bold text-white">Hello, {userName}!</h1>
                         <p className="text-zinc-400">Welcome back</p>
                     </div>
                 </div>
@@ -61,48 +76,115 @@ export default function DashboardPage() {
                                 + Add new card
                             </Button>
                         </div>
-                        <NeonCard glow className="relative overflow-hidden h-56 flex flex-col justify-between bg-gradient-to-br from-purple-900/80 to-black border-none">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10" />
 
-                            <div className="flex justify-between items-start z-10">
-                                <CreditCard className="h-8 w-8 text-white/80" />
-                                <span className="text-lg font-bold italic text-white/50">VISA</span>
-                            </div>
+                        {/* Flippable Card */}
+                        <div
+                            className="card-container cursor-pointer"
+                            onClick={() => setIsCardFlipped(!isCardFlipped)}
+                            style={{ perspective: "1000px" }}
+                        >
+                            <div
+                                className={`transition-transform duration-700 ${isCardFlipped ? "[transform:rotateY(180deg)]" : ""}`}
+                                style={{
+                                    transformStyle: "preserve-3d",
+                                    position: "relative",
+                                    height: "224px"
+                                }}
+                            >
+                                {/* Front of Card */}
+                                <NeonCard
+                                    glow
+                                    className="absolute inset-0 flex flex-col justify-between bg-gradient-to-br from-purple-900/80 to-black border-none"
+                                    style={{ backfaceVisibility: "hidden" }}
+                                >
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10" />
 
-                            <div className="z-10">
-                                <p className="text-zinc-400 text-sm mb-1">Balance</p>
-                                <h3 className="text-3xl font-bold text-white mb-4">$8,465 USD</h3>
-                                <div className="flex justify-between items-end">
-                                    <p className="text-zinc-300 tracking-widest">**** **** **** 4568</p>
-                                    <p className="text-zinc-400 text-xs">12/25</p>
-                                </div>
+                                    <div className="flex justify-between items-start z-10">
+                                        <CreditCard className="h-8 w-8 text-white/80" />
+                                        <span className="text-lg font-bold italic text-white/50">VISA</span>
+                                    </div>
+
+                                    <div className="z-10">
+                                        <p className="text-zinc-400 text-sm mb-1">Balance</p>
+                                        <h3 className="text-3xl font-bold text-white mb-4">$8,465 USD</h3>
+                                        <div className="flex justify-between items-end">
+                                            <p className="text-zinc-300 tracking-widest">**** **** **** 4568</p>
+                                            <p className="text-zinc-400 text-xs">12/25</p>
+                                        </div>
+                                    </div>
+                                </NeonCard>
+
+                                {/* Back of Card */}
+                                <NeonCard
+                                    glow
+                                    className="absolute inset-0 flex flex-col gap-4 bg-gradient-to-br from-purple-900/80 to-black border-none [transform:rotateY(180deg)]"
+                                    style={{
+                                        backfaceVisibility: "hidden"
+                                    }}
+                                >
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">Card Type</span>
+                                            <span className="text-white">Physical</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">Card Number</span>
+                                            <span className="text-white font-mono">4568 **** **** 1234</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">Cardholder</span>
+                                            <span className="text-white">{userName}</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">Valid Thru</span>
+                                            <span className="text-white">12/25</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">CVV</span>
+                                            <span className="text-white">***</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-zinc-500 text-center mt-auto">Click to flip back</p>
+                                </NeonCard>
                             </div>
-                        </NeonCard>
+                        </div>
                     </section>
 
                     {/* Quick Actions */}
                     <section>
                         <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
                         <div className="grid grid-cols-2 gap-4">
-                            <Button className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10">
+                            <Button
+                                onClick={() => router.push("/topup")}
+                                className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10"
+                            >
                                 <div className="p-2 rounded-full bg-green-500/20 text-green-400">
                                     <ArrowDownLeft className="h-5 w-5" />
                                 </div>
                                 <span>Top Up</span>
                             </Button>
-                            <Button className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10">
+                            <Button
+                                onClick={() => router.push("/transactions")}
+                                className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10"
+                            >
                                 <div className="p-2 rounded-full bg-red-500/20 text-red-400">
                                     <ArrowUpRight className="h-5 w-5" />
                                 </div>
                                 <span>Transfer</span>
                             </Button>
-                            <Button className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10">
+                            <Button
+                                onClick={() => router.push("/transactions")}
+                                className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10"
+                            >
                                 <div className="p-2 rounded-full bg-blue-500/20 text-blue-400">
                                     <Send className="h-5 w-5" />
                                 </div>
                                 <span>Send</span>
                             </Button>
-                            <Button className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10">
+                            <Button
+                                onClick={() => router.push("/transactions")}
+                                className="h-auto py-4 flex flex-col gap-2 bg-white/5 hover:bg-white/10 border border-white/10"
+                            >
                                 <div className="p-2 rounded-full bg-purple-500/20 text-purple-400">
                                     <Wallet className="h-5 w-5" />
                                 </div>
