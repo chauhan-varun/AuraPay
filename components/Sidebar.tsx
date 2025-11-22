@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
     LayoutDashboard,
@@ -12,6 +12,8 @@ import {
     LogOut,
     PlusCircle,
 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -22,6 +24,17 @@ const navItems = [
 
 export function Sidebar() {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await authClient.signOut();
+            toast.success("Logged out successfully");
+            router.push("/");
+        } catch (error) {
+            toast.error("Failed to logout");
+        }
+    };
 
     return (
         <div className="flex h-screen w-64 flex-col border-r border-white/10 bg-black/50 backdrop-blur-xl">
@@ -50,7 +63,10 @@ export function Sidebar() {
                 })}
             </nav>
             <div className="p-4">
-                <button className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300">
+                <button
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
+                >
                     <LogOut className="h-5 w-5" />
                     Logout
                 </button>

@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@plugin "tailwindcss-animate";
-
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -66,18 +64,23 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border);
   }
+
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
   }
 }
 
 @layer utilities {
   .glass-card {
-    @apply bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   }
-  
+
   .neon-text {
     text-shadow: 0 0 10px rgba(168, 85, 247, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
   }
@@ -85,8 +88,11 @@
   .neon-border {
     box-shadow: 0 0 10px rgba(168, 85, 247, 0.2), inset 0 0 10px rgba(168, 85, 247, 0.1);
   }
-  
+
   .neon-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, rgb(192, 132, 252), rgb(236, 72, 153));
   }
 }
