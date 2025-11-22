@@ -19,38 +19,47 @@ export default function AdminLoginPage() {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch("/api/admin/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
+            // Use authClient to sign in (this properly sets cookies)
+            const result = await authClient.signIn.email({
+                email,
+                password,
+            });
+
+            if (result?.error) {
+                toast.error(result.error.message || "Invalid credentials");
+                setLoading(false);
+                return;
+            }
+
+            if (!result?.data) {
+                toast.error("Login failed. Please check your credentials.");
+                setLoading(false);
+                return;
+            }
+
+            // Now verify admin role via API
+            const response = await fetch("/api/admin/verify", {
+                method: "GET",
+                credentials: "include", // Important: include cookies
             });
 
             const data = await response.json();
 
-            if (!response.ok) {
-                if (response.status === 403) {
-                    toast.error("Access denied. Admin privileges required.");
-                } else {
-                    toast.error(data.error || "Invalid credentials");
-                }
+            if (!response.ok || !data.isAdmin) {
+                // Sign out if not admin
+                await authClient.signOut();
+                toast.error("Access denied. Admin privileges required.");
                 setLoading(false);
                 return;
             }
 
             toast.success("Welcome back, Admin!");
 
-            // Wait a bit longer to ensure session cookies are properly set
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Small delay to ensure cookies are set
+            await new Promise(resolve => setTimeout(resolve, 100));
 
-            // Use router.push for proper Next.js navigation
-            router.push("/admin/dashboard");
-
-            // Fallback to hard navigation after a delay if router.push doesn't work
-            setTimeout(() => {
-                window.location.href = "/admin/dashboard";
-            }, 1000);
+            // Use hard navigation to ensure session is loaded
+            window.location.href = "/admin/dashboard";
         } catch (error) {
             console.error("Login error:", error);
             toast.error("An error occurred. Please try again.");
