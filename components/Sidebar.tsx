@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutDashboard,
@@ -45,9 +46,23 @@ export function AppSidebar() {
     };
 
     return (
-        <Sidebar collapsible="icon" className="border-white/10 bg-black/50 backdrop-blur-xl">
-            <SidebarHeader className="border-b border-white/10">
-                <h1 className="text-xl font-bold neon-gradient-text px-2 py-1">AuraPay</h1>
+        <Sidebar
+            collapsible="icon"
+            className="border-white/10 bg-black/50 backdrop-blur-xl"
+        >
+            <SidebarHeader className="border-b border-white/10 h-16 flex items-center justify-center">
+                <div className="flex items-center gap-2 px-2">
+                    <Image
+                        src="/logo.svg"
+                        alt="AuraPay Logo"
+                        width={32}
+                        height={32}
+                        className="shrink-0"
+                    />
+                    <h1 className="text-xl font-bold neon-gradient-text group-data-[collapsible=icon]:hidden">
+                        AuraPay
+                    </h1>
+                </div>
             </SidebarHeader>
 
             <SidebarContent>

@@ -7,7 +7,7 @@ export default function UserLayout({
     children: React.ReactNode;
 }) {
     return (
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={false}>
             <AppSidebar />
             <SidebarInset className="bg-black text-white">
                 <header className="flex h-16 items-center gap-2 border-b border-white/10 px-4">
