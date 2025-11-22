@@ -37,8 +37,9 @@ export default async function AdminLayout({
         }
 
         if (user.role !== "admin") {
-            console.log("Admin Layout: User is not admin, role:", user.role);
-            redirect("/admin/login");
+            console.log("Admin Layout: User is not admin, role:", user.role, "- redirecting to user dashboard");
+            // Redirect non-admin users to their regular dashboard
+            redirect("/dashboard");
         }
 
         console.log("Admin Layout: Access granted for user:", session.user.id);

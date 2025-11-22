@@ -7,26 +7,26 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const router = useRouter();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+
         try {
-            // Use authClient to sign in (this properly sets cookies)
+            // Sign in using the same method as regular users
             const result = await authClient.signIn.email({
                 email,
                 password,
             });
 
             if (result?.error) {
-                toast.error(result.error.message || "Invalid credentials");
+                const errorMessage = result.error.message || "Invalid email or password";
+                toast.error(errorMessage);
                 setLoading(false);
                 return;
             }
@@ -37,32 +37,18 @@ export default function AdminLoginPage() {
                 return;
             }
 
-            // Now verify admin role via API
-            const response = await fetch("/api/admin/verify", {
-                method: "GET",
-                credentials: "include", // Important: include cookies
-            });
-
-            const data = await response.json();
-
-            if (!response.ok || !data.isAdmin) {
-                // Sign out if not admin
-                await authClient.signOut();
-                toast.error("Access denied. Admin privileges required.");
-                setLoading(false);
-                return;
-            }
-
             toast.success("Welcome back, Admin!");
 
             // Small delay to ensure cookies are set
             await new Promise(resolve => setTimeout(resolve, 100));
 
             // Use hard navigation to ensure session is loaded
+            // The admin layout will verify the admin role
             window.location.href = "/admin/dashboard";
-        } catch (error) {
-            console.error("Login error:", error);
-            toast.error("An error occurred. Please try again.");
+        } catch (error: any) {
+            console.error("Admin login error:", error);
+            const errorMessage = error?.message || error?.toString() || "Login failed";
+            toast.error(errorMessage);
             setLoading(false);
         }
     };
