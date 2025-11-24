@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
     CreditCard,
-    Building2,
+    Smartphone,
     Banknote,
     Users,
     Loader2,
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-type PaymentMethod = "card" | "bank" | "cash" | "p2p";
+type PaymentMethod = "card" | "upi" | "cash" | "p2p";
 
 export default function TopUpPage() {
     const router = useRouter();
@@ -29,14 +29,13 @@ export default function TopUpPage() {
     const [cardNumber, setCardNumber] = useState("");
     const [cardExpiry, setCardExpiry] = useState("");
     const [cardCVV, setCardCVV] = useState("");
-    const [accountNumber, setAccountNumber] = useState("");
-    const [ifscCode, setIfscCode] = useState("");
+    const [upiId, setUpiId] = useState("");
     const [depositCode, setDepositCode] = useState("");
     const [contactId, setContactId] = useState("");
 
     const paymentMethods = [
         { id: "card" as PaymentMethod, name: "Card", icon: CreditCard },
-        { id: "bank" as PaymentMethod, name: "Bank Transfer", icon: Building2 },
+        { id: "upi" as PaymentMethod, name: "UPI", icon: Smartphone },
         { id: "cash" as PaymentMethod, name: "Cash Deposit", icon: Banknote },
         { id: "p2p" as PaymentMethod, name: "P2P / Contact", icon: Users },
     ];
@@ -53,9 +52,9 @@ export default function TopUpPage() {
                 toast.error("Please fill in all card details");
                 return;
             }
-        } else if (selectedMethod === "bank") {
-            if (!accountNumber || !ifscCode) {
-                toast.error("Please fill in all bank details");
+        } else if (selectedMethod === "upi") {
+            if (!upiId) {
+                toast.error("Please enter UPI ID");
                 return;
             }
         } else if (selectedMethod === "cash") {
@@ -252,35 +251,25 @@ export default function TopUpPage() {
                             </div>
                         )}
 
-                        {/* Bank Transfer */}
-                        {selectedMethod === "bank" && (
+                        {/* UPI */}
+                        {selectedMethod === "upi" && (
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="accountNumber" className="text-sm font-medium text-zinc-300">
-                                        Account Number
+                                    <Label htmlFor="upiId" className="text-sm font-medium text-zinc-300">
+                                        UPI ID
                                     </Label>
                                     <Input
-                                        id="accountNumber"
+                                        id="upiId"
                                         type="text"
-                                        placeholder="Enter account number"
-                                        value={accountNumber}
-                                        onChange={(e) => setAccountNumber(e.target.value)}
+                                        placeholder="yourname@upi"
+                                        value={upiId}
+                                        onChange={(e) => setUpiId(e.target.value)}
                                         className="bg-black/20 border-white/10 text-white placeholder:text-zinc-600"
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="ifscCode" className="text-sm font-medium text-zinc-300">
-                                        IFSC Code
-                                    </Label>
-                                    <Input
-                                        id="ifscCode"
-                                        type="text"
-                                        placeholder="Enter IFSC code"
-                                        value={ifscCode}
-                                        onChange={(e) => setIfscCode(e.target.value)}
-                                        className="bg-black/20 border-white/10 text-white placeholder:text-zinc-600"
-                                    />
-                                </div>
+                                <p className="text-xs text-zinc-500">
+                                    Enter your UPI ID (e.g., yourname@paytm, yourname@googlepay)
+                                </p>
                             </div>
                         )}
 
