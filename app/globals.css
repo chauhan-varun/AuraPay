@@ -95,4 +95,13 @@
     color: transparent;
     background-image: linear-gradient(to right, rgb(192, 132, 252), rgb(236, 72, 153));
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

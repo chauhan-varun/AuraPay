@@ -291,10 +291,10 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Card Controls */}
-                        <div className="mt-4 grid grid-cols-2 gap-2">
+                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <Button
                                 variant="outline"
-                                className="border-white/10 hover:bg-white/5"
+                                className="border-white/10 hover:bg-white/5 text-sm"
                                 onClick={() => {
                                     const newName = prompt("Enter new name for this card:", cardName);
                                     if (newName) handleCardUpdate({ name: newName });
@@ -304,7 +304,7 @@ export default function DashboardPage() {
                             </Button>
                             <Button
                                 variant="outline"
-                                className={`border-white/10 hover:bg-white/5 ${cardStatus === 'BLOCKED' ? 'text-green-400 hover:text-green-300' : 'text-red-400 hover:text-red-300'}`}
+                                className={`border-white/10 hover:bg-white/5 text-sm ${cardStatus === 'BLOCKED' ? 'text-green-400 hover:text-green-300' : 'text-red-400 hover:text-red-300'}`}
                                 onClick={() => handleCardUpdate({ status: cardStatus === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED' })}
                             >
                                 {cardStatus === 'BLOCKED' ? 'Unblock Card' : 'Block Card'}
@@ -360,18 +360,18 @@ export default function DashboardPage() {
                 <div className="lg:col-span-2 space-y-6 md:space-y-8">
                     <section>
                         <h2 className="text-lg md:text-xl font-bold mb-4">Statistics</h2>
-                        <NeonCard className="h-[300px] sm:h-[350px] md:h-[400px]">
-                            <div className="flex items-center justify-between mb-6">
+                        <NeonCard>
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 gap-3">
                                 <div>
-                                    <p className="text-zinc-400">Total Spends</p>
-                                    <h3 className="text-2xl font-bold">₹9,96,000.00</h3>
+                                    <p className="text-sm md:text-base text-zinc-400">Total Spends</p>
+                                    <h3 className="text-xl md:text-2xl font-bold">₹9,96,000.00</h3>
                                 </div>
                                 <select className="bg-black/20 border border-white/10 rounded-lg px-3 py-1 text-sm outline-none">
                                     <option>Monthly</option>
                                     <option>Weekly</option>
                                 </select>
                             </div>
-                            <div className="h-[300px] w-full">
+                            <div className="h-[200px] sm:h-[240px] md:h-[280px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={data}>
                                         <defs>

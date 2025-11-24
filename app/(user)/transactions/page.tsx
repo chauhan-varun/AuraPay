@@ -180,50 +180,50 @@ export default function TransactionsPage() {
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-white mb-2">Transactions</h1>
-                <p className="text-zinc-400">View and manage your transaction history</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Transactions</h1>
+                <p className="text-sm md:text-base text-zinc-400">View and manage your transaction history</p>
             </div>
 
             {/* Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col gap-4">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5 text-zinc-400" />
                     <Input
                         type="text"
                         placeholder="Search transactions..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 bg-black/20 border-white/10 text-white placeholder:text-zinc-600"
+                        className="pl-10 bg-black/20 border-white/10 text-white placeholder:text-zinc-600 text-sm md:text-base"
                     />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
                     <Button
                         variant={filter === "ALL" ? "default" : "outline"}
                         onClick={() => setFilter("ALL")}
-                        className={filter === "ALL" ? "bg-primary" : "border-white/10 bg-white/5"}
+                        className={`${filter === "ALL" ? "bg-primary" : "border-white/10 bg-white/5"} whitespace-nowrap text-sm`}
                     >
                         All
                     </Button>
                     <Button
                         variant={filter === "RECEIVED" ? "default" : "outline"}
                         onClick={() => setFilter("RECEIVED")}
-                        className={filter === "RECEIVED" ? "bg-primary" : "border-white/10 bg-white/5"}
+                        className={`${filter === "RECEIVED" ? "bg-primary" : "border-white/10 bg-white/5"} whitespace-nowrap text-sm`}
                     >
                         Received
                     </Button>
                     <Button
                         variant={filter === "SENT" ? "default" : "outline"}
                         onClick={() => setFilter("SENT")}
-                        className={filter === "SENT" ? "bg-primary" : "border-white/10 bg-white/5"}
+                        className={`${filter === "SENT" ? "bg-primary" : "border-white/10 bg-white/5"} whitespace-nowrap text-sm`}
                     >
                         Sent
                     </Button>
                     <Button
                         variant={filter === "PAYMENT" ? "default" : "outline"}
                         onClick={() => setFilter("PAYMENT")}
-                        className={filter === "PAYMENT" ? "bg-primary" : "border-white/10 bg-white/5"}
+                        className={`${filter === "PAYMENT" ? "bg-primary" : "border-white/10 bg-white/5"} whitespace-nowrap text-sm`}
                     >
                         Payments
                     </Button>
@@ -241,11 +241,11 @@ export default function TransactionsPage() {
                         filteredTransactions.map((tx) => (
                             <div
                                 key={tx.id}
-                                className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 hover:border-white/10"
+                                className="flex items-start sm:items-center justify-between p-3 md:p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 hover:border-white/10 gap-3"
                             >
-                                <div className="flex items-center gap-4 flex-1">
+                                <div className="flex items-start sm:items-center gap-3 md:gap-4 flex-1 min-w-0">
                                     {/* Image/Avatar */}
-                                    <div className="relative h-12 w-12 rounded-full bg-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                                    <div className="relative h-10 w-10 md:h-12 md:w-12 rounded-full bg-white/10 flex items-center justify-center overflow-hidden shrink-0">
                                         {tx.image ? (
                                             <Image
                                                 src={tx.image}
@@ -255,7 +255,7 @@ export default function TransactionsPage() {
                                                 className="object-cover"
                                             />
                                         ) : (
-                                            <span className="text-xl">
+                                            <span className="text-lg md:text-xl">
                                                 {tx.name.charAt(0).toUpperCase()}
                                             </span>
                                         )}
@@ -263,39 +263,43 @@ export default function TransactionsPage() {
 
                                     {/* Details */}
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2">
-                                            <p className="font-bold text-white truncate">{tx.name}</p>
-                                            {getTypeIcon(tx.type)}
+                                        <div className="flex items-center gap-1.5 md:gap-2 mb-1">
+                                            <p className="font-bold text-white truncate text-sm md:text-base">{tx.name}</p>
+                                            <div className="shrink-0">
+                                                {getTypeIcon(tx.type)}
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-2 text-xs text-zinc-400">
-                                            <span>{tx.date} • {tx.time}</span>
+                                        <div className="flex flex-wrap items-center gap-1 md:gap-2 text-xs text-zinc-400">
+                                            <span className="whitespace-nowrap">{tx.date}</span>
+                                            <span>•</span>
+                                            <span className="whitespace-nowrap">{tx.time}</span>
                                             {tx.method && (
                                                 <>
-                                                    <span>•</span>
-                                                    <span>{tx.method}</span>
+                                                    <span className="hidden sm:inline">•</span>
+                                                    <span className="hidden sm:inline">{tx.method}</span>
                                                 </>
                                             )}
                                         </div>
                                         {tx.description && (
-                                            <p className="text-xs text-zinc-500 mt-1">{tx.description}</p>
+                                            <p className="text-xs text-zinc-500 mt-1 truncate">{tx.description}</p>
                                         )}
                                     </div>
                                 </div>
 
                                 {/* Amount */}
-                                <div className="text-right ml-4">
-                                    <p className={`text-lg font-bold ${getTypeColor(tx.type)}`}>
+                                <div className="text-right shrink-0">
+                                    <p className={`text-base md:text-lg font-bold ${getTypeColor(tx.type)} whitespace-nowrap`}>
                                         {tx.type === "RECEIVED" ? "+" : "-"}₹
                                         {tx.amount.toLocaleString("en-IN", {
                                             minimumFractionDigits: 2,
                                         })}
                                     </p>
                                     <span
-                                        className={`text-xs px-2 py-1 rounded-full ${tx.status === "COMPLETED"
-                                                ? "bg-green-500/20 text-green-400"
-                                                : tx.status === "PENDING"
-                                                    ? "bg-yellow-500/20 text-yellow-400"
-                                                    : "bg-red-500/20 text-red-400"
+                                        className={`inline-block text-xs px-2 py-0.5 md:py-1 rounded-full mt-1 ${tx.status === "COMPLETED"
+                                            ? "bg-green-500/20 text-green-400"
+                                            : tx.status === "PENDING"
+                                                ? "bg-yellow-500/20 text-yellow-400"
+                                                : "bg-red-500/20 text-red-400"
                                             }`}
                                     >
                                         {tx.status}
